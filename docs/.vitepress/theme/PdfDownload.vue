@@ -35,7 +35,7 @@ watch(() => route.path, checkRoute)
 // raw URL     →  https://raw.githubusercontent.com/kuntalojha/st/main/docs/st/units/unit-1/p1.md
 function getRawUrl() {
   const GITHUB_USER   = 'kuntalojha'
-  const GITHUB_REPO   = 'st'
+  const GITHUB_REPO   = 'ajp'
   const GITHUB_BRANCH = 'main'
 
   // window.location.pathname = /st/st/units/unit-1/p1.html
