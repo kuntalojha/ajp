@@ -1,0 +1,8 @@
+/node_modules
+*.pdf
+!docs/public/*.pdf
+desc/.vitepress/dist
+desc/.vitepress/cache
+*.c
+*.exe
+*/.vitepress/dist

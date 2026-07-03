@@ -1,0 +1,262 @@
+/* ── Fonts ─────────────────────────────────────────────────────────────── */
+:root {
+  --vp-font-family-base: 'Inter', -apple-system, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── Monokai palette ───────────────────────────────────────────────────── */
+:root {
+  --mk-bg:       #272822;
+  --mk-bg2:      #1e1f1c;
+  --mk-surface:  #3e3d32;
+  --mk-border:   #49483e;
+  --mk-yellow:   #e6db74;
+  --mk-green:    #a6e22e;
+  --mk-pink:     #f92672;
+  --mk-purple:   #ae81ff;
+  --mk-orange:   #fd971f;
+  --mk-blue:     #66d9ef;
+  --mk-comment:  #75715e;
+  --mk-white:    #f8f8f2;
+}
+
+/* ── Override VitePress brand colors with Monokai ──────────────────────── */
+:root {
+  --vp-c-brand-1:    #a6e22e;
+  --vp-c-brand-2:    #88c22a;
+  --vp-c-brand-3:    #6e9e20;
+  --vp-c-brand-soft: rgba(166, 226, 46, 0.12);
+}
+
+/* dark mode — force Monokai everywhere */
+.dark {
+  --vp-c-bg:          #272822;
+  --vp-c-bg-soft:     #1e1f1c;
+  --vp-c-bg-mute:     #3e3d32;
+  --vp-c-divider:     #49483e;
+  --vp-c-text-1:      #f8f8f2;
+  --vp-c-text-2:      #cfcfc2;
+  --vp-c-text-3:      #75715e;
+  --vp-c-brand-1:     #a6e22e;
+  --vp-c-brand-soft:  rgba(166, 226, 46, 0.12);
+  --vp-sidebar-bg-color: #1e1f1c;
+  --vp-nav-bg-color:  rgba(39, 40, 34, 0.92);
+  --vp-code-block-bg: #1e1f1c;
+}
+
+/* light mode — keep it Monokai-inspired but readable */
+:root:not(.dark) {
+  --vp-c-bg:          #fafaf5;
+  --vp-c-bg-soft:     #f0f0e8;
+  --vp-c-bg-mute:     #e8e8d8;
+  --vp-c-divider:     #d0d0b8;
+  --vp-c-text-1:      #272822;
+  --vp-c-text-2:      #49483e;
+  --vp-c-text-3:      #75715e;
+  --vp-c-brand-1:     #5a8a10;
+  --vp-sidebar-bg-color: #f0f0e8;
+}
+
+/* ── Nav ────────────────────────────────────────────────────────────────── */
+.VPNav {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--vp-c-divider) !important;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
+.VPSidebarItem.is-active > .item {
+  background: var(--vp-c-brand-soft);
+  border-radius: 8px;
+}
+.VPSidebarItem.is-active > .item .link .text {
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+.VPSidebarItem .item:hover {
+  background: var(--vp-c-brand-soft);
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+/* ── H1 gradient — Monokai keyword pink → green ──────────────────────── */
+.vp-doc h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #f92672, #a6e22e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.vp-doc h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #66d9ef;   /* Monokai blue — class/type color */
+  border-top: 1px solid var(--vp-c-divider);
+  padding-top: 1.25rem;
+  margin-top: 2rem;
+}
+
+.vp-doc h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #a6e22e;   /* Monokai green — function color */
+}
+
+.vp-doc h4 {
+  color: #fd971f;   /* Monokai orange */
+}
+
+/* ── Blockquote ────────────────────────────────────────────────────────── */
+.vp-doc blockquote {
+  border-left: 3px solid #a6e22e;
+  background: rgba(166, 226, 46, 0.06);
+  color: #cfcfc2;
+}
+
+/* ── Inline code ───────────────────────────────────────────────────────── */
+.vp-doc code {
+  background: rgba(249, 38, 114, 0.12);
+  color: #f92672;
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-size: 0.88em;
+}
+
+/* ── Code blocks ───────────────────────────────────────────────────────── */
+div[class*='language-'] {
+  border-radius: 10px;
+  border: 1px solid #49483e;
+  margin: 1.25rem 0;
+}
+
+div[class*='language-'] code {
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* language label */
+div[class*='language-']::before {
+  color: #75715e;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+/* ── Tables ─────────────────────────────────────────────────────────────── */
+.vp-doc table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.vp-doc th {
+  background: rgba(166, 226, 46, 0.12);
+  color: #a6e22e;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  padding: 10px 14px;
+}
+.vp-doc td {
+  padding: 9px 14px;
+  border-top: 1px solid var(--vp-c-divider);
+  font-size: 14px;
+}
+.vp-doc tr:hover td {
+  background: rgba(166, 226, 46, 0.05);
+}
+
+/* ── Custom containers ──────────────────────────────────────────────────── */
+.custom-block.tip {
+  border-color: #a6e22e;
+  background: rgba(166, 226, 46, 0.08);
+}
+.custom-block.warning {
+  border-color: #e6db74;
+  background: rgba(230, 219, 116, 0.08);
+}
+.custom-block.danger {
+  border-color: #f92672;
+  background: rgba(249, 38, 114, 0.08);
+}
+
+/* ── Hero buttons ───────────────────────────────────────────────────────── */
+.VPHero .action .VPButton.brand {
+  background: linear-gradient(135deg, #a6e22e, #66d9ef);
+  border: none;
+  color: #272822 !important;
+  font-weight: 700;
+  box-shadow: 0 4px 18px rgba(166, 226, 46, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.VPHero .action .VPButton.brand:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(166, 226, 46, 0.45);
+}
+.VPHero .action .VPButton.alt {
+  border: 1.5px solid #a6e22e;
+  color: #a6e22e;
+  background: transparent;
+}
+.VPHero .action .VPButton.alt:hover {
+  background: rgba(166, 226, 46, 0.1);
+}
+
+/* ── Feature cards ──────────────────────────────────────────────────────── */
+.VPFeature {
+  border: 1px solid var(--vp-c-divider) !important;
+  border-radius: 14px;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.VPFeature:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(166, 226, 46, 0.12);
+  border-color: #a6e22e !important;
+}
+
+/* ── Doc footer prev/next ───────────────────────────────────────────────── */
+.VPDocFooter .pager-link {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  padding: 14px 20px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.VPDocFooter .pager-link:hover {
+  border-color: #a6e22e;
+  background: rgba(166, 226, 46, 0.06);
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #49483e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a6e22e; }
+
+/* ── Selection ──────────────────────────────────────────────────────────── */
+::selection {
+  background: rgba(166, 226, 46, 0.25);
+  color: #f8f8f2;
+}
+
+/* ── PDF button override for Monokai ───────────────────────────────────── */
+.pdf-btn {
+  background: #a6e22e !important;
+  color: #272822 !important;
+  box-shadow: 0 4px 20px rgba(166, 226, 46, 0.4) !important;
+}
+.pdf-btn:hover:not(:disabled) {
+  background: #88c22a !important;
+  box-shadow: 0 8px 28px rgba(166, 226, 46, 0.5) !important;
+}
+.pdf-btn.loading {
+  background: #5a8a10 !important;
+}
+
+/* ── Mobile ─────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .vp-doc h1 { font-size: 1.6rem; }
+  .vp-doc h2 { font-size: 1.2rem; }
+}

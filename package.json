@@ -1,0 +1,19 @@
+{
+  "name": "advanced-java-programming",
+  "version": "1.0.0",
+  "description": "Advanced Java Programming Notes — Theory & Lab",
+  "keywords": ["ajp", "java", "notes", "kuntalojha"],
+  "homepage": "https://github.com/kuntalojha/ajp#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/kuntalojha/ajp.git" },
+  "license": "MIT",
+  "author": "Kuntal Ojha",
+  "type": "module",
+  "scripts": {
+    "docs:dev":     "vitepress dev docs --host",
+    "docs:build":   "vitepress build docs",
+    "docs:preview": "vitepress preview docs --port 8080"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}
