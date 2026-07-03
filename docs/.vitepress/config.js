@@ -7,7 +7,7 @@ export default defineConfig({
   lang: 'en-IN',
 
   head: [
-    ['link', { rel: 'icon', href: '/ajp/favicon.ico' }],
+    ['link', { rel: 'icon', href: 'favicon.ico' }],
     ['meta', { name: 'theme-color', content: '#272822' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', {

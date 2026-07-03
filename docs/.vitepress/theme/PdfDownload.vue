@@ -25,7 +25,7 @@ const showButton = ref(false)
 // ── Only show on unit / question pages ─────────────────────────────────────
 function checkRoute() {
   const p = route.path
-  showButton.value = p.includes('/units/') || p.includes('/questions/')
+  showButton.value = p.includes('/theory/') || p.includes('/lab/')
 }
 onMounted(checkRoute)
 watch(() => route.path, checkRoute)
@@ -43,7 +43,7 @@ function getRawUrl() {
   // remove .html → st/units/unit-1/p1
   // result: docs/st/units/unit-1/p1.md ✅
   const cleanPath = window.location.pathname
-    .replace(/^\/st\//, '')
+    .replace(/^\/ajp\//, '')
     .replace(/\.html$/, '')
 
   return `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/docs/${cleanPath}.md`
