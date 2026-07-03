@@ -7,7 +7,7 @@ export default defineConfig({
   lang: 'en-IN',
 
   head: [
-    ['link', { rel: 'icon', href: 'favicon.ico' }],
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
     ['meta', { name: 'theme-color', content: '#272822' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', {
@@ -122,7 +122,12 @@ export default defineConfig({
           { text: 'Exp 12 — Hibernate CRUD',              link: '/lab/exp-12' },
         ],
       },
-      { text: '📑 Syllabus ', link: '/syllabus ' },
+      { text: '📑 Syllabus ',
+        items: [
+          { text: 'AJP Syllabus', link: '/syllabus' },
+          { text: 'Lab Syllabus', link: '/lab-syllabus' },
+        ]
+      },
     ],
 
     // ── Separate sidebars per section ─────────────────────────────────────

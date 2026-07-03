@@ -31,17 +31,17 @@ onMounted(checkRoute)
 watch(() => route.path, checkRoute)
 
 // ── Build the raw GitHub URL from the current VitePress route ──────────────
-// route.path  →  /st/units/unit-1/p1   (no extension, no base)
-// raw URL     →  https://raw.githubusercontent.com/kuntalojha/st/main/docs/st/units/unit-1/p1.md
+// route.path  →  /ajp/units/unit-1/p1   (no extension, no base)
+// raw URL     →  https://raw.githubusercontent.com/kuntalojha/ajp/main/docs/ajp/units/unit-1/p1.md
 function getRawUrl() {
   const GITHUB_USER   = 'kuntalojha'
   const GITHUB_REPO   = 'ajp'
   const GITHUB_BRANCH = 'main'
 
-  // window.location.pathname = /st/st/units/unit-1/p1.html
-  // remove leading /st/ → st/units/unit-1/p1.html
-  // remove .html → st/units/unit-1/p1
-  // result: docs/st/units/unit-1/p1.md ✅
+  // window.location.pathname = /ajp/ajp/units/unit-1/p1.html
+  // remove leading /ajp/ → ajp/units/unit-1/p1.html
+  // remove .html → ajp/units/unit-1/p1
+  // result: docs/ajp/units/unit-1/p1.md ✅
   const cleanPath = window.location.pathname
     .replace(/^\/ajp\//, '')
     .replace(/\.html$/, '')
@@ -99,10 +99,10 @@ async function downloadPdf() {
     let   pageNum     = 1
 
     const COLLEGE = 'SHARAD INSTITUTE OF TECHNOLOGY COLLEGE OF ENGINEERING'
-    const SUBJECT = 'Software Testing - Study Notes'
+    const SUBJECT = 'Advanced Java Programming - Study Notes'
     const AUTHOR  = 'Kuntal Ojha - kuntalojha.github.io'
     // Strip emojis from title — jsPDF helvetica can't render them
-    const pageTitle = (document.title?.replace(' | Software Testing', '').trim() || 'Notes')
+    const pageTitle = (document.title?.replace(' | Advanced Java Programming', '').trim() || 'Notes')
       .replace(/[\u{1F000}-\u{1FFFF}|\u{2600}-\u{27FF}|\u{FE00}-\u{FEFF}]/gu, '').trim()
     const lastUpdated = document.querySelector('.VPLastUpdated span')?.textContent?.trim() || 
   new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
