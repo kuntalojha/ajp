@@ -221,61 +221,57 @@ const today = `Last updated: ${lastUpdated}`
         })
     }
 
-    // ── Render inline tokens (handles bold, italic, code, text) ──────────────
-    // Segments: [{text, bold, italic}]
+   // ── Simple text draw with style ───────────────────────────────────────────
+    function drawText(text, x, y, style = 'normal', size = 10, color = [30, 41, 59]) {
+      doc.setFont('helvetica', style)
+      doc.setFontSize(size)
+      doc.setTextColor(...color)
+      doc.text(text, x, y)
+    }
+
+    // ── Render inline children properly ──────────────────────────────────────
     function renderInline(children, startX, fontSize = 10) {
-      // Build segments
-      const segments = []
-      let bold = false, italic = false
+      const lineH = fontSize * 0.42 + 2
+      const maxX  = PAGE_W - MARGIN_R
+      let x = startX
+      let bold = false
+      let italic = false
+
       for (const child of children) {
-        if (child.type === 'strong_open')  { bold = true;  continue }
-        if (child.type === 'strong_close') { bold = false; continue }
+        if (child.type === 'strong_open')  { bold = true;   continue }
+        if (child.type === 'strong_close') { bold = false;  continue }
         if (child.type === 'em_open')      { italic = true;  continue }
         if (child.type === 'em_close')     { italic = false; continue }
+
         if (child.type === 'softbreak' || child.type === 'hardbreak') {
-          segments.push({ text: '\n', bold: false, italic: false })
-          continue
-        }
-        if (child.type === 'text' || child.type === 'code_inline') {
-          segments.push({ text: sanitize(child.content), bold, italic })
-        }
-      }
-
-      // Now render segments line-aware
-      // First, flatten into a single string to split into lines, then re-apply styles
-      // Simple approach: render word by word tracking x position
-      const lineH = fontSize * 0.42 + 1.8
-      const maxX  = MARGIN_L + CONTENT_W
-      let x = startX
-
-      ensureSpace(lineH + 2)
-
-      for (const seg of segments) {
-        if (seg.text === '\n') {
           cursorY += lineH
           x = startX
           ensureSpace(lineH)
           continue
         }
 
-        const style = seg.bold && seg.italic ? 'bolditalic'
-                    : seg.bold   ? 'bold'
-                    : seg.italic ? 'italic'
-                    : 'normal'
+        if (child.type !== 'text' && child.type !== 'code_inline') continue
+        if (!child.content) continue
 
-        doc.setFont('helvetica', style)
-        doc.setFontSize(fontSize)
-        doc.setTextColor(30, 41, 59)
+      const style = bold && italic ? 'bolditalic' : bold ? 'bold' : italic ? 'italic' : 'normal'
+      doc.setFont('helvetica', style)
+      doc.setFontSize(fontSize)
+      // bold = red temporarily to confirm it's working
+      doc.setTextColor(bold ? 220 : 30, bold ? 50 : 41, bold ? 50 : 59)
 
-        // split by spaces to wrap manually
-        const words = seg.text.split(' ')
-        for (let wi = 0; wi < words.length; wi++) {
-          const word = words[wi] + (wi < words.length - 1 ? ' ' : '')
-          const w    = doc.getTextWidth(word)
-          if (x + w > maxX && x !== startX) {
+        // split into words and place one by one with wrapping
+        const words = child.content.split(/(\s+)/)
+        for (const word of words) {
+          if (!word) continue
+          const w = doc.getTextWidth(word)
+          if (x + w > maxX && x > startX) {
             cursorY += lineH
             x = startX
             ensureSpace(lineH)
+            doc.setFont('helvetica', style)
+            doc.setFontSize(fontSize)
+            doc.setTextColor(30, 41, 59)
+            if (word.trim() === '') continue // skip whitespace at line start
           }
           doc.text(word, x, cursorY)
           x += w
@@ -284,21 +280,18 @@ const today = `Last updated: ${lastUpdated}`
       cursorY += lineH
     }
 
-    // ── Render list (bullet or ordered, handles nesting) ──────────────────────
+    // ── Render list ───────────────────────────────────────────────────────────
     function renderList(tokens, startIdx, ordered, baseIndent, depth = 0) {
       const closeType = ordered ? 'ordered_list_close' : 'bullet_list_close'
-      const openType  = ordered ? 'ordered_list_open'  : 'bullet_list_open'
       let j   = startIdx + 1
       let num = 1
-      const indent = baseIndent + (depth * 5)
+      const indent = baseIndent + depth * 5
 
-      while (j < tokens.length) {
+      while (j < tokens.length && tokens[j].type !== closeType) {
         const t = tokens[j]
 
-        // nested list
         if (t.type === 'bullet_list_open') {
-          renderList(tokens, j, false, indent + 2, depth + 1)
-          // skip to close
+          renderList(tokens, j, false, indent + 3, depth + 1)
           let d = 1, k = j + 1
           while (k < tokens.length) {
             if (tokens[k].type === 'bullet_list_open')  d++
@@ -307,8 +300,9 @@ const today = `Last updated: ${lastUpdated}`
           }
           j = k + 1; continue
         }
+
         if (t.type === 'ordered_list_open') {
-          renderList(tokens, j, true, indent + 2, depth + 1)
+          renderList(tokens, j, true, indent + 3, depth + 1)
           let d = 1, k = j + 1
           while (k < tokens.length) {
             if (tokens[k].type === 'ordered_list_open')  d++
@@ -318,29 +312,28 @@ const today = `Last updated: ${lastUpdated}`
           j = k + 1; continue
         }
 
-        if (t.type === closeType) break
+        if (t.type === 'inline' && t.children?.length) {
+          ensureSpace(10)
 
-        if (t.type === 'inline') {
-          const children = t.children || []
-          if (children.length) {
-            ensureSpace(8)
-
-            if (ordered) {
-              // number
-              doc.setFont('helvetica', 'bold')
-              doc.setFontSize(9.5)
-              doc.setTextColor(99, 102, 241)
-              doc.text(`${num}.`, indent + 1, cursorY)
-              num++
-              renderInline(children, indent + 7, 10)
-            } else {
-              // bullet dot
-              doc.setFillColor(99, 102, 241)
-              doc.circle(indent + 2.5, cursorY - 1.2, depth === 0 ? 1 : 0.7, 'F')
-              renderInline(children, indent + 6, 10)
-            }
-            addSpacing(1)
+          if (ordered) {
+            // draw number
+            doc.setFont('helvetica', 'bold')
+            doc.setFontSize(10)
+            doc.setTextColor(99, 102, 241)
+            const numStr = `${num}.`
+            doc.text(numStr, indent, cursorY)
+            const numW = doc.getTextWidth(numStr) + 2
+            num++
+            // draw inline content starting after number
+            renderInline(t.children, indent + numW, 10)
+          } else {
+            // draw bullet
+            doc.setFillColor(99, 102, 241)
+            doc.circle(indent + 1.5, cursorY - 1.5, depth === 0 ? 1 : 0.7, 'F')
+            // draw inline content starting after bullet
+            renderInline(t.children, indent + 5, 10)
           }
+          addSpacing(1.5)
         }
         j++
       }
@@ -490,6 +483,73 @@ const today = `Last updated: ${lastUpdated}`
         i = j + 1; continue
       }
 
+      // ── Table ─────────────────────────────────────────────────────────────
+      if (token.type === 'table_open') {
+        let j = i + 1
+        const rows = []
+        let currentRow = []
+        let isHeader = false
+        let inHeader = false
+
+        while (j < tokens.length && tokens[j].type !== 'table_close') {
+          const t = tokens[j]
+          if (t.type === 'thead_open')  { inHeader = true }
+          if (t.type === 'thead_close') { inHeader = false }
+          if (t.type === 'tr_open')     { currentRow = []; isHeader = inHeader }
+          if (t.type === 'tr_close')    {
+            rows.push({ cells: currentRow, isHeader })
+          }
+          if (t.type === 'inline') {
+            currentRow.push(sanitize(t.content))
+          }
+          j++
+        }
+
+        if (rows.length > 0) {
+          addSpacing(4)
+          const colCount = rows[0].cells.length
+          const colW     = CONTENT_W / colCount
+          const cellPad  = 3
+          const fontSize = 8.5
+
+          rows.forEach((row) => {
+            // calculate row height based on tallest cell
+            let maxLines = 1
+            row.cells.forEach(cell => {
+              const lines = doc.splitTextToSize(cell, colW - cellPad * 2)
+              if (lines.length > maxLines) maxLines = lines.length
+            })
+            const rowH = maxLines * (fontSize * 0.45) + cellPad * 2 + 1
+            ensureSpace(rowH + 2)
+
+            // draw cells
+            row.cells.forEach((cell, ci) => {
+              const cx = MARGIN_L + ci * colW
+              // background
+              if (row.isHeader) {
+                doc.setFillColor(238, 240, 255)
+                doc.rect(cx, cursorY - cellPad, colW, rowH, 'F')
+              } else if (rows.indexOf(row) % 2 === 0) {
+                doc.setFillColor(248, 250, 252)
+                doc.rect(cx, cursorY - cellPad, colW, rowH, 'F')
+              }
+              // border
+              doc.setDrawColor(200, 204, 220)
+              doc.setLineWidth(0.25)
+              doc.rect(cx, cursorY - cellPad, colW, rowH, 'S')
+              // text
+              doc.setFont('helvetica', row.isHeader ? 'bold' : 'normal')
+              doc.setFontSize(fontSize)
+              doc.setTextColor(row.isHeader ? 58 : 30, row.isHeader ? 71 : 41, row.isHeader ? 196 : 59)
+              const lines = doc.splitTextToSize(cell, colW - cellPad * 2)
+              doc.text(lines, cx + cellPad, cursorY)
+            })
+            cursorY += rowH
+          })
+          addSpacing(4)
+        }
+        i = j + 1; continue
+      }
       // ── Horizontal rule ───────────────────────────────────────────────────
       if (token.type === 'hr') {
         addSpacing(3)
