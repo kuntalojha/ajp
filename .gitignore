@@ -5,3 +5,5 @@ docs/.vitepress/dist
 docs/.vitepress/cache
 *.c
 *.exe
+*.java
+*.class
