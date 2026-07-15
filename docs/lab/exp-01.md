@@ -66,4 +66,6 @@ public class LoginForm {
 ```
 
 ## Output:
+<!--
 ![exp-01](/img/exp-01.png)
+-->
